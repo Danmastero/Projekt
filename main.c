@@ -1,10 +1,9 @@
 #include <stdio.h>
+#include "synchro.h"
 
-int main() {
-   printf("Hello World!");
-   printf("Dziala\n", );
-   printf("Matełusz Wajche przełusz!");
+int main(int argc, char **argv) {
 
+   synchronize(argc);
 
    return 0;
 }
