@@ -5,10 +5,6 @@
 
 int synchronize(int argc, char** argv)
 {
-  if(argc != 2)
-  {
-    fputs("You need to put atleast 2 argument(catalogs).\n", stderr);
-    return -1;
-  }
+
 
 }
