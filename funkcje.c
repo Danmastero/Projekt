@@ -1,14 +1,6 @@
 #include "funkcje.h"
-// off_t pobierz_rozmiar(char *in)
-// {
-//     struct stat rozmiar;
-//     if(stat(in, &rozmiar) == 0)
-//     {
-//         return rozmiar.st_size;
-//     }
-//     return -1;
-// }
-time_t pobierz_czas(char* wej) //zwraca date modyfikacji pliku
+
+time_t pobierz_czas(char* wej)
 {
     struct stat czas;
     if(stat(wej, &czas) == -1)
@@ -185,28 +177,7 @@ void kopiuj(char *wej, char *wyj)
     zmien_parametry(wej, wyj);
     syslog(LOG_INFO, "Skopiowano plik %s", wej);
 }
-// void kopiuj_mapowanie(char *wej, char *wyj)
-// {
-//     int rozmiar = pobierz_rozmiar(wej);
-//     int plikwej = open(wej, O_RDONLY);
-//     int plikwyj = open(wyj, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-//
-//     if(plikwej == -1 || plikwyj ==-1)
-//     {
-//         syslog(LOG_ERR, "Blad w otwarciu pliku!");
-//         exit(EXIT_FAILURE);
-//     }
-//
-//     char *mapa = (char*) mmap (0, rozmiar, PROT_READ, MAP_SHARED | MAP_FILE, plikwej, 0);
-//
-//     write(plikwyj, mapa, rozmiar);
-//
-//     close(plikwej);
-//     close(plikwyj);
-//     munmap(mapa, rozmiar); //usuwanie mapy z paamieci;
-//     zmien_parametry(wej,wyj);
-//     syslog(LOG_INFO, "Z uzyciem mapowania skopiowano plik %s do miejsca %s", wej, wyj);
-// }
+
 void PrzegladanieFolderu(char * nazwa_sciezki1, char* sciezka_folderu1, char* sciezka_folderu2, bool CzyR,int Wielkosc_pliku)
 {
     printf("JESTESMY W : %s\n",nazwa_sciezki1);
