@@ -1,13 +1,13 @@
 #include "funkcje.h"
-off_t pobierz_rozmiar(char *in)
-{
-    struct stat rozmiar;
-    if(stat(in, &rozmiar) == 0)
-    {
-        return rozmiar.st_size;
-    }
-    return -1;
-}
+// off_t pobierz_rozmiar(char *in)
+// {
+//     struct stat rozmiar;
+//     if(stat(in, &rozmiar) == 0)
+//     {
+//         return rozmiar.st_size;
+//     }
+//     return -1;
+// }
 time_t pobierz_czas(char* wej) //zwraca date modyfikacji pliku
 {
     struct stat czas;
@@ -71,7 +71,7 @@ char *dodaj_do_sciezki(char* sciezka,char *dodatek)
     nowa_sciezka[strlen(sciezka) + 1 + strlen(dodatek)] ='\0';
     return nowa_sciezka;
 }
-bool  sprawdzanie(char * nazwa_sciezki, char* sciezka_folderu1, char* sciezka_folderu2)
+bool sprawdzanie(char * nazwa_sciezki, char* sciezka_folderu1, char* sciezka_folderu2)
 {
     bool wynik = 0;
     char *nazwa_sciezki_zm = nazwa_sciezki+strlen(sciezka_folderu1);
@@ -185,28 +185,28 @@ void kopiuj(char *wej, char *wyj)
     zmien_parametry(wej, wyj);
     syslog(LOG_INFO, "Skopiowano plik %s", wej);
 }
-void kopiuj_mapowanie(char *wej, char *wyj)
-{
-    int rozmiar = pobierz_rozmiar(wej);
-    int plikwej = open(wej, O_RDONLY);
-    int plikwyj = open(wyj, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-
-    if(plikwej == -1 || plikwyj ==-1)
-    {
-        syslog(LOG_ERR, "Blad w otwarciu pliku!");
-        exit(EXIT_FAILURE);
-    }
-
-    char *mapa = (char*) mmap (0, rozmiar, PROT_READ, MAP_SHARED | MAP_FILE, plikwej, 0);
-
-    write(plikwyj, mapa, rozmiar);
-
-    close(plikwej);
-    close(plikwyj);
-    munmap(mapa, rozmiar); //usuwanie mapy z paamieci;
-    zmien_parametry(wej,wyj);
-    syslog(LOG_INFO, "Z uzyciem mapowania skopiowano plik %s do miejsca %s", wej, wyj);
-}
+// void kopiuj_mapowanie(char *wej, char *wyj)
+// {
+//     int rozmiar = pobierz_rozmiar(wej);
+//     int plikwej = open(wej, O_RDONLY);
+//     int plikwyj = open(wyj, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+//
+//     if(plikwej == -1 || plikwyj ==-1)
+//     {
+//         syslog(LOG_ERR, "Blad w otwarciu pliku!");
+//         exit(EXIT_FAILURE);
+//     }
+//
+//     char *mapa = (char*) mmap (0, rozmiar, PROT_READ, MAP_SHARED | MAP_FILE, plikwej, 0);
+//
+//     write(plikwyj, mapa, rozmiar);
+//
+//     close(plikwej);
+//     close(plikwyj);
+//     munmap(mapa, rozmiar); //usuwanie mapy z paamieci;
+//     zmien_parametry(wej,wyj);
+//     syslog(LOG_INFO, "Z uzyciem mapowania skopiowano plik %s do miejsca %s", wej, wyj);
+// }
 void PrzegladanieFolderu(char * nazwa_sciezki1, char* sciezka_folderu1, char* sciezka_folderu2, bool CzyR,int Wielkosc_pliku)
 {
     printf("JESTESMY W : %s\n",nazwa_sciezki1);
@@ -223,7 +223,7 @@ void PrzegladanieFolderu(char * nazwa_sciezki1, char* sciezka_folderu1, char* sc
             {
                 if(!(strcmp( plik->d_name, "." ) == 0 || strcmp( plik->d_name, "..") == 0))
                 {
-                    char * sciekza_do_folderu =podmien_folder1(dodaj_do_sciezki(nazwa_sciezki1,plik->d_name),sciezka_folderu1,sciezka_folderu2);
+                    char * sciekza_do_folderu = podmien_folder1(dodaj_do_sciezki(nazwa_sciezki1,plik->d_name),sciezka_folderu1,sciezka_folderu2);
                     if(!(pom = opendir(sciekza_do_folderu)))
                     {
                         syslog(LOG_INFO, "Stworzono folder %s", sciekza_do_folderu);
@@ -239,20 +239,13 @@ void PrzegladanieFolderu(char * nazwa_sciezki1, char* sciezka_folderu1, char* sc
                 }
             }
         }
-        else  if((plik->d_type) == DT_REG)// GDY nie jest folderem
+        else if((plik->d_type) == DT_REG)// GDY nie jest folderem
         {
             nowa_sciezka = dodaj_do_sciezki(nazwa_sciezki1,plik->d_name);
             int i;
             if((i = sprawdzanie(nowa_sciezka,sciezka_folderu1,sciezka_folderu2)) == 1)
             {
-                if(pobierz_rozmiar(nowa_sciezka) > Wielkosc_pliku)
-                {
-                    kopiuj_mapowanie(nowa_sciezka,podmien_folder1(nowa_sciezka,sciezka_folderu1,sciezka_folderu2));
-                }
-                else
-                {
                     kopiuj(nowa_sciezka,podmien_folder1(nowa_sciezka,sciezka_folderu1,sciezka_folderu2));
-                }
             }
         }
     }
