@@ -23,12 +23,11 @@ int main(int argc, char * argv[])
         syslog(LOG_ERR, "Niepoprawny identyfikator procesu child");
         exit(EXIT_FAILURE);
     }
-    printf("TEST POCZATKWOY\n");
     if(pid > 0)
     {
         exit(EXIT_SUCCESS);
     }
-    printf("pid > 0 EXIT_SUCCESS\n");
+
     umask(0);
     sid = setsid();
     if(sid < 0)
@@ -50,14 +49,12 @@ int main(int argc, char * argv[])
     struct stat s;
     char * folder1_sciezka = NULL;
     char * folder2_sciezka = NULL;
-    printf("prawie git\n");
     while((wybor = getopt(argc, argv, "s:i:o:r")) != -1)
     {
         switch(wybor)
         {
         case 's': // przekazanie nowego czasu spania demona
             czas_spania_demona = atoi(optarg);
-            printf("SPANKO DZIALA\n");
             break;
 
         case 'i':
@@ -67,9 +64,8 @@ int main(int argc, char * argv[])
                 if(s.st_mode & S_IFDIR) //sciezka jest katalogiem
                 {
                     folder1_sciezka = optarg;
-                    printf("FOLDER DZIALA\n");
                 }
-                else //sciezka nie jest katalogiem, wywal blad
+                else //sciezka nie jest katalogiem, wyrzuca blad
                 {
                     printf("-i: Podany argument nie jest katalogiem\n");
                     syslog(LOG_ERR, "Podany argument nie jest katalogiem");
@@ -85,9 +81,8 @@ int main(int argc, char * argv[])
                 if(s.st_mode & S_IFDIR) //sciezka jest katalogiem
                 {
                     folder2_sciezka = optarg;
-                    printf("FOLDER 2 DZIALA\n");
                 }
-                else //sciezka nie jest katalogiem, wywal blad
+                else //sciezka nie jest katalogiem, wyrzuca blad
                 {
                     printf("-o: Podany argument nie jest katalogiem\n");
                     syslog(LOG_ERR, "Podany argument nie jest katalogiem");
@@ -102,7 +97,7 @@ int main(int argc, char * argv[])
 
         }
     }
-    sleep(czas_spania_demona); // spanie demona 
+    sleep(czas_spania_demona); // spanie demona
     close(STDIN_FILENO);
     close(STDOUT_FILENO);
     close(STDERR_FILENO);
@@ -121,6 +116,7 @@ int main(int argc, char * argv[])
         syslog(LOG_INFO, "Demon zostal uspany");
         if((sleep(czas_spania_demona)) == 0)
             syslog(LOG_INFO, "Demon zostalo wybudzony");
+        sleep(czas_spania_demona);
     }
     closelog();
     exit(EXIT_SUCCESS);
